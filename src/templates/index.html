@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="..\static\dist\output.css" rel="stylesheet">
+  <link rel="stylesheet" href="..\static\css\style.css">
+</head>
+<body class="bg-gray-800">
+    <!-- Navbar goes here -->
+    <nav class="bg-white shadow-lg  backdrop-blur lg:border-slate-900/10 dark:border-slate-50/[0.06] supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <!-- Website Logo -->
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <img src="static\img\cog64px.png" alt="Logo" class="h-8 w-8 mr-2">
+                            <span class="font-semibold text-white text-lg">To-Do's</span>
+                        </a>
+                    </div>
+                    <!-- Primary Navbar items -->
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="{{url_for('home_page')}}" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">Home</a>                        
+                        <a href="" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">About</a>
+                    </div>
+                </div>
+                <!-- Secondary Navbar items -->
+                <div class="hidden md:flex items-center space-x-3 ">
+                  {% if current_user.is_anonymous %}
+                  <a href="{{url_for('login')}}" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300">Log In</a>
+                  <a href="{{url_for('register')}}" class="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Sign Up</a>
+                  {%else%}
+                  <a href="{{url_for('logout')}}" class="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Logout</a>
+                  {% endif %}
+
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="outline-none mobile-menu-button">
+                    <svg class=" w-6 h-6 text-gray-500 hover:text-green-500 "
+                        x-show="!showMenu"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                </div>
+            </div>
+        </div>
+        <!-- mobile menu -->
+        <div class="md:hidden mobile-menu">
+            <ul class="md:hidden">
+                <li class="active"><a href="index.html" class="block text-sm px-2 py-4 text-white bg-green-500 font-semibold">Home</a></li>
+                <li><a href="#services" class=" block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Services</a></li>
+                <li><a href="#about" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">About</a></li>
+                <li><a href="#contact" class=" block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Add javascript and style further to get it to work -->
+    <!-- The layout for the to-do app -->
+    <div class="flex justify-center items-center h-screen bg-gray-800">
+       <div class="w-full max-w-sm bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-4">Add a task</h1>
+        <form action="" method="post">
+          <p class="bg-white form-input w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+             {{ form.task_name.label }}<br>
+             {{ form.task_name(size =32) }}
+          </p>
+          <p class="form-input w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+             {{ form.due_date.label }}<br>
+             {{ form.due_date(size=32) }}
+          </p>
+          <p class="form-input w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+             {{ form.status.label }}<br>
+             {{ form.status() }}
+          </p>
+          <p><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full btn btn-primary mt-2" >{{ form.submit() }}</button></p>
+       </form>
+      </div>
+      <div class="w-full max-w-sm bg-white rounded-lg shadow-lg p-6 ">
+        <!-- The header -->
+        <h1 class="text-2xl font-bold mb-4">To-Do's</h1>
+    
+        <!-- The to-do list -->
+        <ul id="todo-list" class="list-none ">
+          {% for task in tasks %}
+          {% if task.status != "Complete" %}
+          <li class="flex items-center mb-4 ">
+            <a href="{{url_for('complete', id=task.id) }}">✓</a>
+            <label class="ml-2 block text-gray-700 font-medium">{{task.task_name}}</label> <br>
+            <label class="ml-2 block text-gray-700 font-medium text-right">{{task.due_date.strftime('%d/%m/%Y')}}</label>
+
+          </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+        <!-- The form for adding new to-do items -->
+        <!-- <form id="todo-form" class="mb-4">
+          <input id="todo-input" type="text" class="form-input w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Add a new item..." />
+          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full btn btn-primary mt-2 ">Add</button>
+        </form> -->
+    
+        <!-- The footer -->
+       <!--  <div class="text-center">
+          
+          <form action="/remove-item" method="POST">
+            <button type="submit" class="btn btn-secondary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Clear Completed</button>
+        </form>
+        </div> -->
+      </div>
+      <div class="w-full max-w-sm bg-white rounded-lg shadow-lg p-6">
+        <!-- The header -->
+        <h1 class="text-2xl font-bold mb-4">Completed for: {{date}}</h1>
+    
+        <ul id="removed-list" class="list-none text-black ">
+          {% for task in tasks %}
+          {% if task.status == "Complete" and task.due_date.strftime('%d/%m/%Y') == date%}
+          <li class="flex items-center mb-4">
+            <a href="{{url_for('delete', id=task.id) }}">🗑️</a>
+            <label class=" ml-2 block text-gray-700 font-medium line-through">{{task.task_name}}</label>
+            <label class="ml-2 block text-gray-700 font-medium line-through">        {{task.due_date.strftime('%d/%m/%Y')}}</label>
+
+          </li>
+          {%endif%}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+      
+  
+    </div>
+  </div>
+<script src="static/js/navbar.js"></script>
+<script src="static/js/todoform.js"></script>
+</body>
+</html>
